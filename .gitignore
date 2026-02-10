@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+ai_bball/
+
+# Streamlit
+.streamlit/
+
+# Models
+*.pt
+*.pth
+
+# Videos
+*.mp4
+*.avi
+*.mov
+
+# OS
+Thumbs.db
+.DS_Store

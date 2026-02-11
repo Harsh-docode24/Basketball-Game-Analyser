@@ -1,206 +1,238 @@
-🏀Basketball Analyzer — Shot Detector & Form Confidence
+# 🏀 Basketball Analyzer — Shot Detection & Form Confidence System
 
-An end-to-end computer vision–based basketball shot analysis system that automatically detects the rim, tracks shots, evaluates shooting form, and produces a visual + statistical coaching summary.
+An end-to-end computer vision system that automatically detects the rim, tracks shot trajectories, evaluates shooting biomechanics, and generates structured performance summaries.
 
-The system uses:
+The system integrates object detection, pose estimation, geometric evaluation, and an interactive UI to provide deterministic and explainable shot analysis.
 
-A custom-trained YOLO model (best.pt) for rim detection
+---
 
-Ball trajectory tracking
+# 1. Project Overview
 
-MediaPipe Pose for form evaluation
+The Basketball Analyzer processes shooting videos to automatically determine:
 
-Streamlit for an interactive UI
+- Shot outcome (MAKE / MISS)
+- Form confidence at release
+- Aggregate performance across multiple attempts
 
-🚀 Project Overview
+The system operates fully automatically and requires no manual calibration.
 
-This project analyzes basketball shooting videos to answer:
+---
 
-Was the shot MADE or MISSED?
+# 2. Problem Definition
 
-How good was the shooting form at release?
+Traditional basketball training often relies on subjective visual assessment. This project aims to:
 
-What is the overall performance across multiple shots?
+- Automate shot outcome detection
+- Quantify shooting form biomechanically
+- Provide consistent, explainable analytics
+- Generate structured coaching summaries
 
-All analysis is fully automatic — no manual calibration is required.
+---
 
-✨ Key Features
-🎯 Automatic Rim Detection (YOLO)
+# 3. System Architecture
 
-Uses a custom-trained YOLO model (best.pt)
+The system follows a modular pipeline:
 
-Model is trained using parameters defined in config.yaml
+1. Rim Detection (YOLO Model)
+2. Pose Estimation (MediaPipe)
+3. Shot Release Detection
+4. Ball Tracking
+5. Geometric Shot Evaluation
+6. Statistical Aggregation
+7. Annotated Video Rendering
 
-Detects the basketball rim reliably across frames
+Each module operates independently and contributes structured output to the final evaluation layer.
 
-The detected rim is the single source of truth for shot evaluation
+---
 
-This removes human bias and ensures consistency across videos.
+# 4. Core Components
 
-🏀 Ball Tracking & Trajectory
+## 4.1 Rim Detection
 
-Tracks the basketball after release
+- Custom-trained YOLO model (`best.pt`)
+- Model parameters defined in `config.yaml`
+- Provides bounding box used as geometric reference
 
-Draws a visible trajectory path
+The rim detection output acts as the authoritative reference for shot evaluation.
 
-Uses the ball center for geometric calculations
+---
 
-🧍 Shooting Form Analysis (MediaPipe Pose)
+## 4.2 Ball Tracking & Trajectory
 
-At the moment of release, the system evaluates:
+- Tracks ball center coordinates frame-by-frame
+- Computes geometric relationships with rim center
+- Draws trajectory overlay on video
 
-Elbow extension
+---
 
-Knee bend
+## 4.3 Shooting Form Evaluation (MediaPipe Pose)
 
-Wrist follow-through
+At the release frame, the following biomechanical parameters are analyzed:
 
-These are combined into a Form Confidence Score (0–100).
+- Elbow extension
+- Knee bend
+- Wrist follow-through
 
-Displayed directly on the video:
+These parameters are aggregated into a:
 
-MAKE
-Form: 48 / 100
+Form Confidence Score (0–100)
 
-🎯 Shot Outcome Logic (Explainable)
+Example:
+MAKE | Form Score: 48 / 100
 
-A shot is evaluated after release using geometry:
+---
 
-✅ MAKE
+# 5. Shot Outcome Logic (Deterministic & Explainable)
 
-Ball center passes through the detected rim area
+Shot evaluation is geometry-based:
 
-❌ MISS
+MAKE  
+Ball center passes within rim bounding area.
 
-Ball drops below the rim without entering
+MISS  
+Ball drops below rim without intersection.
 
-No heuristics or guessing — decisions are deterministic and explainable.
+No probabilistic heuristics are used.  
+All decisions are deterministic and reproducible.
 
-📊 Multi-Shot Coach Summary
+---
 
-After processing the full video, the app generates:
+# 6. Multi-Shot Statistical Summary
 
-Average Form Confidence
+After processing a full session, the system generates:
 
-Average joint breakdown (Elbow, Knee, Wrist)
-
-Final shot tally
+- Average Form Confidence
+- Joint-level breakdown (Elbow, Knee, Wrist)
+- Final shot tally
 
 Example:
 
-Average Form Confidence: 59 / 100
-Average Breakdown - Elbow: 89, Knee: 1, Wrist: 94
+Average Form Confidence: 59 / 100  
+Breakdown:  
+Elbow: 89  
+Knee: 1  
+Wrist: 94  
 
-Final Tally:
-Score: 25 / 30
+Final Score: 25 / 30  
 
-🎥 Annotated Video Output
+---
 
-The output video includes:
+# 7. Annotated Video Output
 
-Player pose skeleton
+The exported video includes:
 
-Ball trajectory
+- Pose skeleton overlay
+- Ball trajectory path
+- Rim bounding box
+- Shot result overlay (MAKE / MISS)
+- Per-shot form score
 
-Detected rim bounding box
+The annotated output can be downloaded directly from the Streamlit interface.
 
-Shot result overlay (MAKE / MISS)
+---
 
-Per-shot form score
+# 8. Technology Stack
 
-The annotated video can be downloaded directly from the app.
+- Python 3.9+
+- OpenCV (Video Processing)
+- MediaPipe Pose (Landmark Detection)
+- YOLO (Ultralytics) – Rim Detection
+- NumPy (Geometric Computation)
+- Streamlit (Interactive UI)
+- cvzone (Visualization Utilities)
 
-🧠 How Shot Calculation Works (High Level)
-1. Detect rim using YOLO (best.pt)
-2. Detect shot release using pose motion
-3. Track ball positions after release
-4. Measure distance between ball center and rim center
-5. If ball enters rim → MAKE
-6. If ball drops below rim → MISS
+---
 
-🛠️ Tech Stack
+# 9. Project Structure
 
-Python 3.9+
-
-OpenCV — video processing & overlays
-
-MediaPipe Pose — body landmark detection
-
-YOLO (Ultralytics) — rim detection (best.pt)
-
-NumPy — geometry & math
-
-Streamlit — interactive web UI
-
-cvzone — visualization utilities
-
-📂 Project Structure
 Basketball-Game-Analyser/
 │
-├── analyzer.py          # Main Streamlit application
-├── trial.py             # Experiments / testing
-├── best.pt              # Custom YOLO rim detection model
-├── config.yaml          # Training & threshold configuration
-├── requirements.txt     # Dependencies
-├── .gitignore
-└── README.md
+├── analyzer.py          # Main Streamlit application  
+├── trial.py             # Experimental modules  
+├── best.pt              # Custom YOLO rim model  
+├── config.yaml          # Model configuration  
+├── requirements.txt     # Dependencies  
+├── docs/                # Structured documentation modules  
+└── README.md  
 
-⚙️ Installation
-1️⃣ Create virtual environment
+---
+
+# 10. Installation
+
+## 1. Create Virtual Environment
+
 python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
 
-2️⃣ Install dependencies
+Windows:
+venv\Scripts\activate
+
+Linux/Mac:
+source venv/bin/activate
+
+---
+
+## 2. Install Dependencies
+
 pip install -r requirements.txt
 
-▶️ Run the Application
+---
+
+## 3. Run Application
+
 streamlit run analyzer.py
 
-
 Then:
+- Upload a basketball video (.mp4 / .mov)
+- Click "Analyze Shot"
+- Review annotated video and statistical summary
 
-Upload a basketball video (.mp4 / .mov)
+---
 
-Click Analyze Shot
+# 11. Known Limitations
 
-Review annotated video and coach summary
+- Shot distance measured in pixel space (no real-world calibration)
+- Ball detection may fail under heavy occlusion
+- Single-player focus
+- Net interaction not explicitly modeled
 
-⚠️ Known Limitations
+---
 
-Shot distance is pixel-based (no real-world court calibration)
+# 12. Future Improvements
 
-Ball detection may fail under extreme occlusion
+- Real-world court calibration
+- Multi-player tracking
+- Shot arc efficiency metrics
+- Net-based confirmation logic
+- Performance analytics dashboard
+- CSV export of shot data
 
-Single-player focus
+---
 
-Net interaction not explicitly modeled
+# 13. Documentation Approach
 
-🔮 Future Improvements
+This repository follows structured documentation principles:
 
-Real-world court calibration
+- Clear hierarchical sections
+- Modular system explanation
+- Deterministic algorithm breakdown
+- Reproducible installation steps
 
-Multi-player support
+Future updates will include DITA XML–based documentation modules in the `/docs/dita` directory.
 
-Shot arc efficiency metrics
+---
 
-Net-based confirmation
+# 14. Author
 
-Performance analytics dashboard
+Harsh 
 
-CSV export of shot data
+---
 
-👤 Author
+# Why This Project Stands Out
 
-Harsh
+- Custom-trained YOLO model
+- Fully automatic rim detection
+- Deterministic shot evaluation logic
+- Integrated pose + object tracking
+- End-to-end working system
+- Structured and explainable output
 
-⭐ Why This Project Stands Out
-
-Uses a custom-trained YOLO model
-
-Fully automatic rim detection
-
-Combines pose estimation + object tracking
-
-Produces coaching-grade feedback
-
-End-to-end, working system — not a demo

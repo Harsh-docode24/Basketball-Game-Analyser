@@ -1,0 +1,9 @@
+<task>
+  <title>Installing the Basketball Analyzer</title>
+  <steps>
+    <step>Clone the repository.</step>
+    <step>Create a Python virtual environment.</step>
+    <step>Install dependencies using pip.</step>
+    <step>Run the Streamlit application.</step>
+  </steps>
+</task>

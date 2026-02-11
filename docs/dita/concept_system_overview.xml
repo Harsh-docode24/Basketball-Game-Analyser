@@ -1,0 +1,10 @@
+<concept>
+  <title>Basketball Analyzer System Overview</title>
+  <body>
+    The Basketball Analyzer is a modular computer vision system
+    designed to evaluate basketball shot outcomes and shooting form.
+
+    The system integrates rim detection, pose estimation, ball tracking,
+    and deterministic geometric evaluation to produce explainable results.
+  </body>
+</concept>
